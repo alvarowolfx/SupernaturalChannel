@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  	<div class="row-fluid" ng-switch on="waiting">
+	    
+	    <div class="well span12">
+        	<center><h4> Current selected hashtag : {{mainTag}} </h4><center>
+        </div>	       
+
+        <div ng-switch-when="true" class="span12 ">  			
+        	
+        	<center><h3>We are building the graph</h3><center>
+        	
+        	<div class="progress progress-striped active ">  			
+  				<div id="progressbar" class="bar" style="width: 60%;"></div>
+  			</div>
+
+		</div>   
+
+        <bargraph ng-switch-when="false" val="data" class='span12'></bargraph>
+			
+	</div>
+</div>
