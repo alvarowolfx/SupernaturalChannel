@@ -1,0 +1,20 @@
+
+//Seleciona os usuários mais mencionados em relação a tag #Supernatural
+
+START supernatural=node:Hashtag("name:#Supernatural~0.2") // Start with the reference node
+MATCH supernatural<-[:TAG]-t-[:MENTION]->user
+RETURN user,count(user<-[:MENTION]-t)
+ORDER BY count(user<-[:MENTION]-t) desc
+
+
+//Seleciona as tags que aparecem em conjunto com a tag #Supernatural
+
+START tag = node:Hashtag("name:#Supernatural~0.9") 
+MATCH otherTag<-[:TAG]-t-[:TAG]->tag
+RETURN otherTag , count(t-[:TAG]->otherTag) as cont 
+ORDER BY count(t-[:TAG]->otherTag) desc 
+LIMIT 10
+
+
+
+
