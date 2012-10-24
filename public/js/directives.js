@@ -22,6 +22,7 @@ angular.module('supernaturalDirectives',[])
 		        	if (!newVal) {
 		          		return;
 		        	}
+		        	
 		            console.log(newVal);
 		    		nv.addGraph(function() {
 					    var chart = nv.models.discreteBarChart()
@@ -59,14 +60,14 @@ angular.module('supernaturalDirectives',[])
       			scope.$watch('value', function (newVal, oldVal) {
 	      			console.log('Value changed on directedGraph');        		
 	        		//svg.selectAll('*').remove();        
-	        		console.log(newVal);
+	        		//console.log(newVal);
 		        	if (!newVal) {
 		          		return;
 		        	}
 		        	
 		            // Declare a spot for the graph
 					var svg = d3.select(element[0]).append("svg")
-						.attr("style", 'height:89%;width:90%');
+						.attr("style", 'height:500;width:100%');
 									 	
 					// Create the graph
 					var force = d3.layout.force()
@@ -76,45 +77,53 @@ angular.module('supernaturalDirectives',[])
 						.on('tick', tick)
 						.size([900, 500]);
 				 	
-				 	force.nodes(d3.values(nodes))
-     					 .links(d3.values(links))
-     					 .start();
-
-     				var nodes = [];
+				 	var nodes = [];
 		        	var links = [];
+				 	
+     				
 		        	// Populate the nodes
+		        	//console.log(newVal['nodes']);
+		            //console.log(newVal['links']);
 					for (var i in newVal['nodes'])
 					{		
 						
-						nodes.push(newVal['nodes'][i]['id'], 
-									{"name": newVal['nodes'][i]['name'], 
-									 "data": newVal['nodes'][i]['count']});
+						nodes[parseInt(newVal['nodes'][i]['node'])] =  {"name": newVal['nodes'][i]['name'], 
+																		 "data": newVal['nodes'][i]['count']};
 						
 					}
 					// Populate the links
 					for (var i in newVal['links'])
 					{	
-						links.push(newVal['links'][i]['id'],
-									{"source": nodes[newVal['links'][i]['source']], 
-									 "target": nodes[newVal['links'][i]['target']], 
-									 "data":nodes[newVal['links'][i]['type']]});				
+						links[newVal['links'][i]['id']] = {"source": nodes[newVal['links'][i]['source']], 
+															 "target": nodes[newVal['links'][i]['target']], 
+															 "data": nodes[newVal['links'][i]['target']].data};				
 					}
-		            console.log(nodes);
-		            console.log(links);
+		            //console.log(nodes);
+		            //console.log(links);
 
-				 	var link = svg.selectAll(".link").data(force.links());
+		            force.nodes(d3.values(nodes))
+     					 .links(d3.values(links))
+     					 .start();
+
+				 	var link = svg.selectAll("line.link").data(force.links());
 					 
 					// Update the new links
-					link.enter().append("line");
+					link.enter().append("line")
+								.attr("class","link")
+								.style("stroke-width",function(d){ return Math.sqrt(d.data)});
 				 
 					// Remove the old links
 					link.exit().remove();
 				 
 					// Draw the nodes
-					var node = svg.selectAll(".node").data(force.nodes());
+					var node = svg.selectAll("circle.node").data(force.nodes());
 				 
 					// Update the new nodes 
-					node.enter().append("svg:g");
+					node.enter().append("circle")
+										.attr("class", "node")
+									    .attr("r", 20)
+								        .style("fill", "black")
+								        .call(force.drag);
 				 
 					// Remove the old nodes
 					node.exit().remove();		

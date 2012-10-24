@@ -45,11 +45,11 @@ function UserController($scope,User){
 		var id = 99999;	
 		for(var i in $scope.users){
 
-			links.push({id : id, source : $scope.mainTag , target : $scope.users[i]['id']});
+			links.push({id : id, source : "0" , target : $scope.users[i]['node']});
 			id += 1;
 			nodes.push($scope.users[i]);
 		}
-		nodes.push({ id : $scope.mainTag, name : $scope.mainTag , count : 1})
+		nodes.push({ node : "0", name : $scope.mainTag , count : 1});
 
 		$scope.userGraph = {nodes : nodes , links : links};
 

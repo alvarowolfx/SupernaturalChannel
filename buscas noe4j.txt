@@ -15,6 +15,11 @@ RETURN otherTag , count(t-[:TAG]->otherTag) as cont
 ORDER BY count(t-[:TAG]->otherTag) desc 
 LIMIT 10
 
+START tags = node:Hashtag("name:#Supernatural~0.8") 
+SET tags.name = "#Supernatural"
+RETURN tags.name 
+
+
 
 
 
