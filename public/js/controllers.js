@@ -49,7 +49,7 @@ function UserController($scope,User){
 			id += 1;
 			nodes.push($scope.users[i]);
 		}
-		nodes.push({ node : "0", name : $scope.mainTag , count : 1});
+		nodes.push({ node : "0", name : $scope.mainTag , count : 250});
 
 		$scope.userGraph = {nodes : nodes , links : links};
 

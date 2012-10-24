@@ -8,7 +8,8 @@ angular.module('supernaturalDirectives',[])
 	      		val: '='
 	    	},
 	    	link: function (scope, element, attrs) {
-	    
+	    		
+	    		var color = d3.scale.category20();			      		
 	      
 		      	var vis = d3.select(element[0])
 		      		.append("svg")
@@ -25,17 +26,23 @@ angular.module('supernaturalDirectives',[])
 		        	
 		            console.log(newVal);
 		    		nv.addGraph(function() {
-					    var chart = nv.models.discreteBarChart()
+		    			var chart = nv.models.multiBarHorizontalChart()
+					    //var chart = nv.models.discreteBarChart()
 					        .x(function(d) { return d['name']  })
 					        .y(function(d) { return d['count'] })
-					        .staggerLabels(true)
+					        .margin({top: 30, right: 20, bottom: 50, left: 175})          					          				
+ 					        .showControls(false)
+					        //.staggerLabels(true)
 					        .tooltips(false)
-					        .showValues(true)
+					        .showValues(true);
 					  			  	
 					   	vis.datum(newVal)
 					       .transition().duration(2000)
 					       .call(chart);
-					 				 	
+					 			
+					 	d3.selectAll('rect')
+					 		.style("fill", function(d) { return color(d.count); }) ;
+
 					   	nv.utils.windowResize(chart.update);
 				 
 				   	   	return chart;
@@ -55,7 +62,8 @@ angular.module('supernaturalDirectives',[])
 				value : '='
 			},
 			link : function(scope,element,attrs){
-								      		
+					
+				var color = d3.scale.category20();			      		
 
       			scope.$watch('value', function (newVal, oldVal) {
 	      			console.log('Value changed on directedGraph');        		
@@ -71,11 +79,11 @@ angular.module('supernaturalDirectives',[])
 									 	
 					// Create the graph
 					var force = d3.layout.force()
-						.gravity(.2)
-						.distance(250)
-						.charge(-1000)
+						.gravity(0.1)
+						.distance(220)
+						.charge(-500)
 						.on('tick', tick)
-						.size([900, 500]);
+						.size([500, 500]);
 				 	
 				 	var nodes = [];
 		        	var links = [];
@@ -110,6 +118,7 @@ angular.module('supernaturalDirectives',[])
 					// Update the new links
 					link.enter().append("line")
 								.attr("class","link")
+								.style("stroke", function(d) { return color(d.data); })
 								.style("stroke-width",function(d){ return Math.sqrt(d.data)});
 				 
 					// Remove the old links
@@ -117,14 +126,24 @@ angular.module('supernaturalDirectives',[])
 				 
 					// Draw the nodes
 					var node = svg.selectAll("circle.node").data(force.nodes());
-				 
-					// Update the new nodes 
-					node.enter().append("circle")
-										.attr("class", "node")
-									    .attr("r", 20)
-								        .style("fill", "black")
-								        .call(force.drag);
-				 
+					
+					node = 	node.enter().append("g")
+				 				.attr("class","node")				 		
+				 				.call(force.drag);
+
+					
+					
+					node.append("circle")
+						//.attr("class", "node")
+					    .attr("r", function(d) { return d.data/10; })
+				        .style("fill", function(d) { return color(d.data); });
+								        
+				 	node.append("text")			
+				 		.attr('dx',function(d) { return -d.data/10; })
+				 		.attr('dy','.35em') 		
+				 		.text(function(d){ return d.name});
+				 	
+
 					// Remove the old nodes
 					node.exit().remove();		
 
