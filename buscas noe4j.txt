@@ -5,6 +5,7 @@ START supernatural=node:Hashtag("name:#Supernatural~0.2") // Start with the refe
 MATCH supernatural<-[:TAG]-t-[:MENTION]->user
 RETURN user,count(user<-[:MENTION]-t)
 ORDER BY count(user<-[:MENTION]-t) desc
+LIMIT 10
 
 
 //Seleciona as tags que aparecem em conjunto com a tag #Supernatural
@@ -15,6 +16,7 @@ RETURN otherTag , count(t-[:TAG]->otherTag) as cont
 ORDER BY count(t-[:TAG]->otherTag) desc 
 LIMIT 10
 
+//Tentativa de harmonização de dados
 START tags = node:Hashtag("name:#Supernatural~0.8") 
 SET tags.name = "#Supernatural"
 RETURN tags.name 
